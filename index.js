@@ -15,7 +15,7 @@ app.use(helmet());
 //   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
 //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 // }));
-const cors = require("cors");
+
 
 app.use(cors({
   origin: [
