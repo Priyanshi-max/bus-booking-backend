@@ -1,22 +1,23 @@
+require("dotenv").config();
+
 const express = require('express');
-app.set("trust proxy", 1);
-require("dotenv").config()
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+
 const bookingRoutes = require('./routes/bookingRoutes');
 
-const app = express();
-const PORT = process.env.PORT || 8000;
+const app = express(); // ✅ define first
+
+// 🔥 FIX: trust proxy (VERY IMPORTANT)
+app.set("trust proxy", 1);
+
+const PORT = process.env.PORT || 3000;
 
 // Security middleware
 app.use(helmet());
-// app.use(cors({
-//   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-// }));
 
-
+// CORS (FIXED)
 app.use(cors({
   origin: [
     "http://localhost:3000","http://localhost:8000",
@@ -28,44 +29,36 @@ app.use(cors({
 
 app.options("*", cors());
 
-
-
-
+// Rate limiter (general)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Too many requests, please try again later' },
 });
 app.use(limiter);
 
-// Stricter limiter for booking endpoint
-const bookLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 10,
-  message: { error: 'Too many booking attempts, slow down' },
-});
-
-app.use(express.json({ limit: '10kb' }));
+// JSON parser
+app.use(express.json());
 
 // Health check
-app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 // Routes
 app.use('/api', bookingRoutes);
 
-// 404 handler
+// 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Global error handler
+// Error handler
 app.use((err, req, res, next) => {
-  console.error('[Error]', err.stack);
+  console.error(err);
   res.status(500).json({ error: 'Internal server error' });
 });
 
+// Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
