@@ -10,10 +10,22 @@ const PORT = process.env.PORT || 8000;
 
 // Security middleware
 app.use(helmet());
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+// }));
+const cors = require("cors");
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: [
+    "http://localhost:3000","http://localhost:8000",
+    "https://your-app.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
+
+app.options("*", cors());
 
 // Rate limiting: 100 requests per 15 minutes per IP
 const limiter = rateLimit({
