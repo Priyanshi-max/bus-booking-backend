@@ -13,8 +13,8 @@ RUN npm install
 # Copy all files
 COPY . .
 
-# Expose port (Back4App uses 3000)
-EXPOSE 3000
+# Expose port (Back4App uses 8000)
+EXPOSE 8000
 
 # Start app
 CMD ["npm", "start"]
