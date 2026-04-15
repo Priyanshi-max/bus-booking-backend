@@ -20,14 +20,13 @@ app.use(helmet());
 // CORS (FIXED)
 app.use(cors({
   origin: [
-    "http://localhost:3000","http://localhost:8000",
+    "http://localhost:3000", "http://localhost:8000",
     "https://your-vercel-app.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
-app.options("*", cors());
 
 // Rate limiter (general)
 const limiter = rateLimit({
