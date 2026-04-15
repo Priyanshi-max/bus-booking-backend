@@ -1,4 +1,5 @@
 const express = require('express');
+app.set("trust proxy", 1);
 require("dotenv").config()
 const cors = require('cors');
 const helmet = require('helmet');
@@ -19,11 +20,13 @@ const cors = require("cors");
 app.use(cors({
   origin: [
     "http://localhost:3000","http://localhost:8000",
-    "https://your-app.vercel.app"
+    "https://your-vercel-app.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
+
+app.options("*", cors());
 
 app.options("*", cors());
 
